@@ -1,7 +1,7 @@
 #include "lab.h"
 
-list_t *list_init(void (*destroy_data)(void *),
-                  int (*compare_to)(const void *, const void *)) {
+list_t *list_init(void (*destroy_data)(void *), int (*compare_to)(const void *, const void *)) {
+  
   list_t *list = (list_t *)malloc(sizeof(list_t));
   if (!list) {
     return NULL;
@@ -41,4 +41,16 @@ void list_destroy(list_t **list) {
   free(l->head);
   free(l);
   *list = NULL;
+}
+
+list_t *list_add(list_t *list, void *data){
+
+}
+
+void *list_remove_index(list_t *list, size_t index){
+
+}
+
+int list_indexof(list_t *list, void *data){
+
 }
