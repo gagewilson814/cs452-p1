@@ -74,16 +74,16 @@ int list_indexof(list_t *list, void *data)
   {
     return -1;
   }
+  int currentIndex = 0;
   node_t *curr = list->head->next;
-  for (size_t i = 0; i <= list->size; i++)
+  while (curr != list->head)
   {
     if (list->compare_to(curr->data, data) == 0)
     {
-      return i;
+      return currentIndex;
     }
-    else
-    {
-      return -1;
-    }
+    curr = curr->next;
+    currentIndex++;
   }
+  return -1;
 }
