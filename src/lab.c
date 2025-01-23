@@ -62,10 +62,23 @@ list_t *list_add(list_t *list, void *data)
   list->head->next->prev = newNode;
   list->head->next = newNode;
   list->size++;
+  return list;
 }
 
-void *list_remove_index(list_t *list, size_t index)
-{
+void *list_remove_index(list_t *list, size_t index) {
+  if (!list || index >= list->size) {
+    return NULL;
+  }
+  node_t *curr = list->head->next;
+  for (size_t i = 0; i < index; i++) {
+    curr = curr->next;
+  }
+  curr->prev->next = curr->next;
+  curr->next->prev = curr->prev;
+  void *data = curr->data;
+  free(curr);
+  list->size--;
+  return data;
 }
 
 int list_indexof(list_t *list, void *data)
