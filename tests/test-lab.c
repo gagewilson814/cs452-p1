@@ -68,7 +68,7 @@ void test_add2(void) {
   list_add(lst_, alloc_data(2));
   TEST_ASSERT_TRUE(lst_->size == 2);
 
-  // With two nodes both next and prev should NOT be equal
+  // With three nodes both next and prev should NOT be equal
   TEST_ASSERT_FALSE(lst_->head->next == lst_->head->prev);
   // Make sure we didn't clobber our sentinel node
   TEST_ASSERT_FALSE(lst_->head == lst_->head->next);
@@ -78,6 +78,61 @@ void test_add2(void) {
   // Check to make sure our next and prev have the correct data
   TEST_ASSERT_TRUE(*((int *)lst_->head->next->data) == 2);
   TEST_ASSERT_TRUE(*((int *)lst_->head->prev->data) == 1);
+}
+
+// added test
+void test_add3(void) {
+  list_add(lst_, alloc_data(1));
+  TEST_ASSERT_TRUE(lst_->size == 1);
+  list_add(lst_, alloc_data(2));
+  TEST_ASSERT_TRUE(lst_->size == 2);
+  list_add(lst_, alloc_data(3));
+  TEST_ASSERT_TRUE(lst_->size == 3);
+
+  // With four nodes both next and prev should NOT be equal
+  TEST_ASSERT_FALSE(lst_->head->next == lst_->head->prev);
+  // Make sure we didn't clobber our sentinel node
+  TEST_ASSERT_FALSE(lst_->head == lst_->head->next);
+  TEST_ASSERT_FALSE(lst_->head == lst_->head->prev);
+  TEST_ASSERT_TRUE(lst_->head->data == NULL);
+
+  // Check to make sure our next and prev have the correct data
+  TEST_ASSERT_TRUE(*((int *)lst_->head->next->data) == 3);
+  TEST_ASSERT_TRUE(*((int *)lst_->head->prev->data) == 1);
+}
+
+// added test
+void test_addRemove(void) {
+  list_add(lst_, alloc_data(1));
+  TEST_ASSERT_TRUE(lst_->size == 1);
+  int *rval = (int *)list_remove_index(lst_, 0);
+  TEST_ASSERT_TRUE(lst_->size == 0);
+  TEST_ASSERT_TRUE(*rval == 1);
+  free(rval);
+
+  // Make sure we are back to default
+  TEST_ASSERT_FALSE(lst_->head->next == NULL);
+  TEST_ASSERT_FALSE(lst_->head->prev == NULL);
+  TEST_ASSERT_TRUE(lst_->head->next == lst_->head->prev);
+  TEST_ASSERT_TRUE(lst_->size == 0);
+}
+
+// added test
+void test_add_and_remove_multiple(void) {
+  list_t *lst = list_init(destroy_data, compare_to);
+  for (int i = 0; i < 10; i++) {
+    list_add(lst, alloc_data(i));
+  }
+  TEST_ASSERT_TRUE(lst->size == 10);
+
+  for (int i = 0; i < 10; i++) {
+    int *rval = (int *)list_remove_index(lst, 0);
+    TEST_ASSERT_TRUE(*rval == 9 - i);
+    free(rval);
+  }
+  TEST_ASSERT_TRUE(lst->size == 0);
+
+  list_destroy(&lst);
 }
 
 void test_removeIndex0(void) {
@@ -187,6 +242,16 @@ void test_indexOf0(void) {
   TEST_ASSERT_TRUE(idx == 0);
 }
 
+// added test
+void test_indexOf4(void) {
+  populate_list();
+  // List should be 4->3->2->1->0
+  void *data = alloc_data(0);
+  size_t idx = list_indexof(lst_, data);
+  TEST_ASSERT_TRUE(idx == 4);
+  free(data);
+}
+
 void test_indexOf3(void) {
   populate_list();
   // List should be 4->3->2->1->0
@@ -209,6 +274,9 @@ int main(void) {
   RUN_TEST(test_create_destroy);
   RUN_TEST(test_add1);
   RUN_TEST(test_add2);
+  RUN_TEST(test_add3);
+  RUN_TEST(test_addRemove);
+  RUN_TEST(test_add_and_remove_multiple);
   RUN_TEST(test_removeIndex0);
   RUN_TEST(test_removeIndex3);
   RUN_TEST(test_removeIndex4);
@@ -216,6 +284,7 @@ int main(void) {
   RUN_TEST(test_removeAll);
   RUN_TEST(test_indexOf0);
   RUN_TEST(test_indexOf3);
+  RUN_TEST(test_indexOf4);
   RUN_TEST(test_notInList);
   return UNITY_END();
 }
