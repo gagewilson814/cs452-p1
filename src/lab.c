@@ -1,3 +1,9 @@
+/**
+ * @file lab.c
+ * @brief implementation of a circular doubly linked list with a sentinel node.
+ * @author Gage Wilson, CS452-001 Spring 2025
+ */
+
 #include "lab.h"
 
 list_t *list_init(void (*destroy_data)(void *), int (*compare_to)(const void *, const void *)) {
