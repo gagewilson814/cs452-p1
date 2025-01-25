@@ -21,7 +21,6 @@ list_t *list_init(void (*destroy_data)(void *), int (*compare_to)(const void *, 
 
   list->head = (node_t *)malloc(sizeof(node_t));
   if (!list->head) {
-    free(list);
     return NULL;
   }
 
@@ -65,6 +64,10 @@ list_t *list_add(list_t *list, void *data) {
   if (!newNode) {
     return NULL;
   }
+  if (!data) {
+    free(newNode);
+    return list;
+  }
 
   // setup the new node
   newNode->data = data;
@@ -106,7 +109,7 @@ void *list_remove_index(list_t *list, size_t index) {
 
 int list_indexof(list_t *list, void *data) {
   // check if the list is valid
-  if (!list) {
+  if (!list || !data) {
     return -1;
   }
 

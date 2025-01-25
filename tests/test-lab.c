@@ -47,6 +47,11 @@ void test_create_destroy(void) {
   TEST_ASSERT_TRUE(lst == NULL);
 }
 
+void test_add_null_data(void) {
+  list_add(lst_, NULL);
+  TEST_ASSERT_TRUE(lst_->size == 0);
+}
+
 void test_add1(void) {
   list_add(lst_, alloc_data(1));
   TEST_ASSERT_TRUE(lst_->size == 1);
@@ -133,6 +138,32 @@ void test_add_and_remove_multiple(void) {
   TEST_ASSERT_TRUE(lst->size == 0);
 
   list_destroy(&lst);
+}
+
+void test_remove_from_empty_list(void) {
+  void *rval = list_remove_index(lst_, 0);
+  TEST_ASSERT_TRUE(rval == NULL);
+  TEST_ASSERT_TRUE(lst_->size == 0);
+}
+
+void test_remove_invalid_index_negative(void) {
+  populate_list();
+  void *rval = list_remove_index(lst_, -1);
+  TEST_ASSERT_TRUE(rval == NULL);
+  TEST_ASSERT_TRUE(lst_->size == 5);
+}
+
+void test_index_of_null(void) {
+  populate_list();
+  size_t idx = list_indexof(lst_, NULL);
+  TEST_ASSERT_EQUAL_INT64(-1, idx);
+}
+
+void test_index_of_nonexistent_data(void) {
+  populate_list();
+  int non_existent_data = 999;
+  size_t idx = list_indexof(lst_, &non_existent_data);
+  TEST_ASSERT_EQUAL_INT64(-1, idx);
 }
 
 void test_removeIndex0(void) {
@@ -272,11 +303,15 @@ void test_notInList(void) {
 int main(void) {
   UNITY_BEGIN();
   RUN_TEST(test_create_destroy);
+  RUN_TEST(test_add_null_data);
   RUN_TEST(test_add1);
   RUN_TEST(test_add2);
   RUN_TEST(test_add3);
   RUN_TEST(test_addRemove);
   RUN_TEST(test_add_and_remove_multiple);
+  RUN_TEST(test_remove_from_empty_list);
+  RUN_TEST(test_remove_invalid_index_negative);
+  RUN_TEST(test_index_of_null);
   RUN_TEST(test_removeIndex0);
   RUN_TEST(test_removeIndex3);
   RUN_TEST(test_removeIndex4);
